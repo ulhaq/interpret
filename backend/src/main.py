@@ -261,7 +261,7 @@ async def health_check(session: DbSession) -> Response:
 ROUTERS: list[RouterMount] = [
     RouterMount(router=auth.router, tags=["Authentication"]),
     RouterMount(router=auth.internal_router, tags=["Authentication"], public=False),
-    *(mount for module in MODULES for mount in module.routers),
+    *(*module.routers for module in MODULES),
     RouterMount(router=api_token.router, tags=["API Tokens"], public=False),
     RouterMount(router=organization.router, tags=["Organizations"], public=False),
     RouterMount(router=user.router, tags=["Users"], public=False),

@@ -28,9 +28,9 @@ from collections.abc import AsyncGenerator, Generator
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
-from redis.asyncio import Redis
-from redis.exceptions import ConnectionError as RedisConnectionError
 from sqlalchemy.ext.asyncio import AsyncSession
+lazy from redis.asyncio import Redis
+lazy from redis.exceptions import ConnectionError as RedisConnectionError
 
 from src.foundation.core.config import settings
 from src.foundation.core.database import after_commit

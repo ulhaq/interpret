@@ -20,16 +20,12 @@ from src.products import MODULES
 
 ALL_PERMISSIONS: list[StrEnum] = [
     *core_enums.Permission,
-    *(permission for product in MODULES for permission in product.permissions),
+    *(*product.permissions for product in MODULES),
 ]
 
 PERMISSION_DESCRIPTIONS: dict[StrEnum, str] = {
     **core_enums.PERMISSION_DESCRIPTIONS,
-    **{
-        permission: description
-        for product in MODULES
-        for permission, description in product.permission_descriptions.items()
-    },
+    **{**product.permission_descriptions for product in MODULES},
 }
 
 
@@ -41,7 +37,7 @@ AUDIT_ACTION: type[StrEnum] = StrEnum(
         (action.name, action.value)
         for action in [
             *core_enums.AuditAction,
-            *(action for product in MODULES for action in product.audit_actions),
+            *(*product.audit_actions for product in MODULES),
         ]
     ],
 )
@@ -133,28 +129,33 @@ def compose(products: Sequence[Module]) -> Composition:
             hook_handlers.setdefault(rule.event, []).append(RuleHandler(rule))
     return Composition(
         default_roles=compose_default_roles(core_enums.DEFAULT_ROLES, products),
-        hooks={event: tuple(handlers) for event, handlers in hook_handlers.items()},
-        email_subjects=email_subjects,
+        hooks=frozendict(
+            {event: tuple(handlers) for event, handlers in hook_handlers.items()},
+        ),
+        email_subjects=frozendict(
+            {
+                locale: frozendict(subjects)
+                for locale, subjects in email_subjects.items()
+            },
+        ),
         template_directories=[
             product.template_directory
             for product in products
             if product.template_directory
         ],
-        notification_categories=notification_categories,
+        notification_categories=frozendict(notification_categories),
         entitlements=providers[0] if providers else UNLIMITED,
-        user_data_exporters={
-            product.name: product.user_data_export
-            for product in products
-            if product.user_data_export is not None
-        },
-        email_campaigns={
-            template: medium
-            for product in products
-            for template, medium in product.email_campaigns.items()
-        },
-        email_link_keys=frozenset(
-            key for product in products for key in product.email_link_keys
+        user_data_exporters=frozendict(
+            {
+                product.name: product.user_data_export
+                for product in products
+                if product.user_data_export is not None
+            },
         ),
+        email_campaigns=frozendict(
+            {**product.email_campaigns for product in products},
+        ),
+        email_link_keys=frozenset(*product.email_link_keys for product in products),
     )
 
 

@@ -11,7 +11,8 @@ where the Alloy agent collects them, and the logging processor stamps the active
 trace/span id onto each line so Grafana can jump from a log line to its trace.
 
 Instruments below are created against the global proxies, so they are no-ops
-until setup_telemetry() runs - tests and telemetry-less setups pay nothing.
+until setup_telemetry() runs - tests and telemetry-less setups pay nothing. The SDK,
+exporters and instrumentors are lazy imports, loaded only by setup_telemetry().
 """
 
 import os
@@ -22,17 +23,19 @@ from contextlib import contextmanager
 
 from fastapi.telemetry import TelemetryConfig
 from opentelemetry import metrics, trace
-from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
-from opentelemetry.instrumentation.requests import RequestsInstrumentor
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.metrics import CallbackOptions, Observation
-from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
+lazy from opentelemetry.exporter.otlp.proto.http.metric_exporter import (
+    OTLPMetricExporter,
+)
+lazy from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+lazy from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+lazy from opentelemetry.instrumentation.requests import RequestsInstrumentor
+lazy from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+lazy from opentelemetry.sdk.metrics import MeterProvider
+lazy from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+lazy from opentelemetry.sdk.resources import Resource
+lazy from opentelemetry.sdk.trace import TracerProvider
+lazy from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 from src.foundation.core.config import settings
 from src.foundation.core.database import engine

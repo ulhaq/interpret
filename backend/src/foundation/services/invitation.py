@@ -32,7 +32,7 @@ class InvitationService(BaseService):
         organization_id = self.current_user.organization_id
         invitations = await self.repos.invitation.list_for_organization(organization_id)
 
-        role_ids = {rid for i in invitations for rid in i.role_ids}
+        role_ids = {*i.role_ids for i in invitations}
         roles_by_id: dict[int, InvitationRoleOut] = {}
         if role_ids:
             self.repos.role.set_organization_scope(organization_id)

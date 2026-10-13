@@ -19,7 +19,7 @@ The product-specific code lives in one package per side (`backend/src/example/`,
 
 | Layer    | Stack                                                                                                                                                                                |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Backend  | Python 3.14, FastAPI, async SQLAlchemy, PostgreSQL, Alembic, `uv`                                                                                                                    |
+| Backend  | Python 3.15, FastAPI, async SQLAlchemy, PostgreSQL, Alembic, `uv`                                                                                                                    |
 | Worker   | Standalone asyncio process (product loops, email outbox, GDPR retention, billing's loops)                                                                                            |
 | Frontend | Vue 3, TypeScript, Vite, Pinia, vue-i18n, Tailwind + Reka UI, file-based routing                                                                                                     |
 | Infra    | Docker Compose (postgres, pgadmin, mailpit, backend, worker, frontend, site); opt-in profiles: `analytics` (Umami), `observability` (Alloy agent + Grafana, Prometheus, Loki, Tempo) |

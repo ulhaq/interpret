@@ -21,14 +21,14 @@ log = logging.getLogger(__name__)
 
 # Applied when a soft-deleted user is restored: the returning person sets a new
 # password and must not be locked out by an authenticator from the old account.
-_MFA_RESET: dict = {
-    "mfa_secret": None,
-    "mfa_enabled_at": None,
-    "mfa_recovery_codes": None,
-    "mfa_last_used_step": None,
-    "mfa_failed_attempts": 0,
-    "mfa_locked_until": None,
-}
+_MFA_RESET = frozendict(
+    mfa_secret=None,
+    mfa_enabled_at=None,
+    mfa_recovery_codes=None,
+    mfa_last_used_step=None,
+    mfa_failed_attempts=0,
+    mfa_locked_until=None,
+)
 
 
 class AuthBaseService(BaseService):

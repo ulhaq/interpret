@@ -40,7 +40,7 @@ async def main() -> None:
         loop.add_signal_handler(sig, stop.set)
 
     worker_loops = [
-        *(run for module in MODULES for run in module.worker_loops),
+        *(*module.worker_loops for module in MODULES),
         run_email_outbox_loop,
         run_gdpr_retention_loop,
     ]
