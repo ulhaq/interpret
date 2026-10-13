@@ -1,0 +1,19 @@
+id,lang,text
+d01,da,"Goddag, jeg hedder Mette og er sygeplejerske. Jeg skal hjælpe dig i dag."
+d02,da,Hvornår tog du sidst din medicin?
+d03,da,Du skal tage to tabletter morgen og aften i syv dage.
+d04,da,"Har du nogen allergier, for eksempel over for penicillin?"
+d05,da,Du må ikke spise eller drikke noget efter klokken 22 i aften.
+d06,da,Vi skal bruge dit CPR-nummer og dit sundhedskort.
+d07,da,"Din sag bliver behandlet af jobcentret, og du får et brev i e-Boks inden for tre uger."
+d08,da,"Gør det ondt, når jeg trykker her?"
+a01,ar,أشعر بألم في صدري منذ ثلاثة أيام.
+a02,ar,أخذت حبتين من الباراسيتامول هذا الصباح.
+a03,ar,ابني عمره خمس سنوات وعنده حرارة عالية في الليل.
+a04,ar,لا أفهم الرسالة التي وصلتني من البلدية.
+u01,uk,У мене алергія на пеніцилін.
+u02,uk,"Я вагітна, вже чотири місяці."
+u03,uk,Коли я можу отримати результати аналізів?
+u04,uk,Мені потрібна допомога з житлом для моєї родини.
+e01,en,I have been feeling dizzy since I started the new medication.
+e02,en,Can my wife come in with me during the examination?

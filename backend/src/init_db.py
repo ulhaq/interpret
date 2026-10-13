@@ -40,10 +40,7 @@ _MEMBER_ROLE_PERMISSIONS: list = [
     "read:role",
     "read:permission",
     "manage:api_token",
-    "read:project",
-    "create:project",
-    "update:project",
-    "delete:project",
+    "use:interpret",
 ]
 
 INIT_AUTH_DATA: dict = {

@@ -97,8 +97,8 @@ def test_sort_permissions(sort: str, admin_authenticated: TestClient) -> None:
         (["id"], [[1]], ["eq"], 1),
         (["name"], [["read:user"]], ["eq"], 1),
         (["name"], [["read:"]], ["co"], _count(lambda n, _: "read:" in n)),
-        (["id"], [[15]], ["gt"], TOTAL - 15),
-        (["id"], [[10]], ["gte"], TOTAL - 9),
+        (["id"], [[TOTAL - 3]], ["gt"], 3),
+        (["id"], [[TOTAL - 4]], ["gte"], 5),
         # Single field, multiple values
         (["id"], [[0, 1]], ["between"], 1),
         (["id"], [[1, 2]], ["between"], 2),

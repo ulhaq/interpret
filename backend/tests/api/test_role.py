@@ -56,17 +56,14 @@ def test_get_all_roles(admin_authenticated: TestClient) -> None:
         rs["items"][1]["description"] == "Work with the organization's data day to day."
     )
     assert rs["items"][1]["is_protected"] is False
-    assert len(rs["items"][1]["permissions"]) == 8
+    assert len(rs["items"][1]["permissions"]) == 5
     member_perm_names = {p["name"] for p in rs["items"][1]["permissions"]}
     assert member_perm_names == {
         "read:user",
         "read:role",
         "read:permission",
         "manage:api_token",
-        "read:project",
-        "create:project",
-        "update:project",
-        "delete:project",
+        "use:interpret",
     }
     assert rs["items"][1]["created_at"]
     assert rs["items"][1]["updated_at"]

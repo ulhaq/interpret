@@ -178,8 +178,11 @@ async def test_a_deleted_organizations_name_creates_a_new_organization(
     organization2_admin_authenticated: TestClient,
 ) -> None:
     """Reusing a deleted organization's name never revives it: its data (here a
-    project, the audit log and roles) must not reach whoever picks the name."""
-    admin_authenticated.post("/v1/projects", json={"name": "A's private project"})
+    conversation, the audit log and roles) must not reach whoever picks the name."""
+    admin_authenticated.post(
+        "/v1/interpret/conversations",
+        json={"citizen_language": "ar"},
+    )
     assert admin_authenticated.delete("/v1/organizations/1").status_code == 204
 
     other = organization2_admin_authenticated
@@ -193,7 +196,7 @@ async def test_a_deleted_organizations_name_creates_a_new_organization(
         json={"organization_id": new_id},
     )
     other.headers["Authorization"] = f"Bearer {switched.json()['access_token']}"
-    assert other.get("/v1/projects").json()["items"] == []
+    assert other.get("/v1/interpret/conversations").json()["items"] == []
     assert [r["name"] for r in other.get("/v1/roles").json()["items"]] == ["Owner"]
     actions = {e["action"] for e in other.get("/v1/audit-logs").json()["items"]}
     assert actions <= {"org.create"}

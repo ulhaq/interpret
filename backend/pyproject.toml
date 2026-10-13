@@ -214,7 +214,7 @@ root_packages = ["src"]
 name = "Foundation must not import its modules or the product domain"
 type = "forbidden"
 source_modules = ["src.foundation"]
-forbidden_modules = ["src.billing", "src.marketing", "src.example"]
+forbidden_modules = ["src.billing", "src.marketing", "src.interpret"]
 
 # Billing and marketing are optional foundation modules: none depends on another
 # or on the product, and the product reaches them only through the foundation
@@ -223,16 +223,17 @@ forbidden_modules = ["src.billing", "src.marketing", "src.example"]
 [[tool.importlinter.contracts]]
 name = "Optional modules and the product are independent of each other"
 type = "independence"
-modules = ["src.billing", "src.marketing", "src.example"]
+modules = ["src.billing", "src.marketing", "src.interpret"]
 
 # Each layer may import the layers below it, never the ones above. Applied to
-# the foundation, billing and the product package; `provider` (the payment
-# provider adapter) only exists in billing. Keep `src.example` pointed at your
-# product package when you rename it.
+# the foundation, billing and the product package; `provider` (an external
+# service adapter) exists in billing (payments) and interpret (speech and
+# translation). Keep `src.interpret` pointed at your product package when you
+# rename it.
 [[tool.importlinter.contracts]]
 name = "Layers: routers > services > provider > repositories > models | schemas"
 type = "layers"
-containers = ["src.foundation", "src.billing", "src.marketing", "src.example"]
+containers = ["src.foundation", "src.billing", "src.marketing", "src.interpret"]
 layers = [
     "routers",
     "services",
@@ -248,7 +249,7 @@ source_modules = [
     "src.foundation.routers",
     "src.billing.routers",
     "src.marketing.routers",
-    "src.example.routers",
+    "src.interpret.routers",
 ]
 forbidden_modules = [
     "src.foundation.repositories",
@@ -257,8 +258,8 @@ forbidden_modules = [
     "src.billing.models",
     "src.marketing.repositories",
     "src.marketing.models",
-    "src.example.repositories",
-    "src.example.models",
+    "src.interpret.repositories",
+    "src.interpret.models",
 ]
 # Routers -> services -> repositories is the intended path; only direct
 # imports are forbidden.

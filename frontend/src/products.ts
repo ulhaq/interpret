@@ -6,9 +6,9 @@
  * boundary read; keep the two in sync.
  */
 import billing from '@/billing'
-import example from '@/example'
+import interpret from '@/interpret'
 import type { Module } from '@/foundation/module'
 
-export const products: Module[] = [example]
+export const products: Module[] = [interpret]
 
 export const modules: Module[] = [billing, ...products]

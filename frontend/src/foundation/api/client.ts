@@ -125,9 +125,13 @@ type PathParams<O> = O extends { parameters: { path: infer P } } ? P : never
 
 type Part<Key extends string, T> = [T] extends [never] ? { [K in Key]?: never } : { [K in Key]: T }
 
+/** A multipart body: binary fields (typed `string` by the schema) take a Blob. */
+type Multipart<T> = [T] extends [never] ? never : { [K in keyof T]: T[K] | Blob }
+
 type RequestOptions<O> = Part<'path', PathParams<O>> &
   Part<'body', RequestContent<O, 'application/json'>> &
-  Part<'form', RequestContent<O, 'application/x-www-form-urlencoded'>> & {
+  Part<'form', RequestContent<O, 'application/x-www-form-urlencoded'>> &
+  Part<'multipart', Multipart<RequestContent<O, 'multipart/form-data'>>> & {
     query?: Record<string, string | number | boolean | null | undefined>
     config?: AxiosRequestConfig
   }
@@ -138,6 +142,12 @@ type OptionsArg<O> =
     ? [options?: RequestOptions<O>]
     : [options: RequestOptions<O>]
 
+function toFormData(fields: Record<string, string | Blob>): FormData {
+  const data = new FormData()
+  for (const [name, value] of Object.entries(fields)) data.append(name, value)
+  return data
+}
+
 function request<M extends Method, P extends PathFor<M>>(
   method: M,
   path: P,
@@ -147,12 +157,14 @@ function request<M extends Method, P extends PathFor<M>>(
     path: params,
     body,
     form,
+    multipart,
     query,
     config,
   } = (options ?? {}) as {
     path?: Record<string, string | number>
     body?: unknown
     form?: Record<string, string>
+    multipart?: Record<string, string | Blob>
     query?: Record<string, unknown>
     config?: AxiosRequestConfig
   }
@@ -164,7 +176,8 @@ function request<M extends Method, P extends PathFor<M>>(
     method,
     url,
     params: query,
-    data: form ? new URLSearchParams(form) : body,
+    // FormData sets its own multipart Content-Type (with the boundary).
+    data: form ? new URLSearchParams(form) : multipart ? toFormData(multipart) : body,
     headers: form
       ? { ...config?.headers, 'Content-Type': 'application/x-www-form-urlencoded' }
       : config?.headers,

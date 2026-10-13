@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **SaaS Boilerplate** - a multi-tenant B2B SaaS starter: auth, organizations, RBAC, Stripe billing with plan limits, audit log, GDPR tooling, email + in-app notifications, plus a static marketing site.
 
-Product-specific code lives in one package per side - `backend/src/example/` and `frontend/src/example/` - currently a minimal **Projects** feature (org-scoped CRUD, permissions, a `projects` plan limit, a hook handler, a worker loop). It exists to exercise every extension point; replace it with the real product.
+Product-specific code lives in one package per side - `backend/src/interpret/` and `frontend/src/interpret/`: **Interpret**, spoken interpretation for Danish kommuner, hospitals and clinics. A staff member and a citizen share one device; each holds their own button and speaks, and the other side reads and hears the translation (Danish ⇄ English, Arabic, Ukrainian). The app records 16 kHz mono WAV in the browser (`useWavRecorder`); `POST /v1/interpret/conversations/{id}/turns` runs speech-to-text → translation → text-to-speech through the providers in `src/interpret/provider/` (`live`: Azure Speech + Claude; `fake`: canned text for local dev and tests, `INTERPRET_PROVIDER`). **Nothing said is stored** - only conversation metadata (languages, turn count, speech duration); keep it that way. Permissions `use:interpret`, `read:interpret_usage`; plan limit `interpret_turns` per period. Some docs below still use the removed `example` package as their illustration.
 
 Starting a new product from this template:
 

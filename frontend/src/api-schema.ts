@@ -479,41 +479,56 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects': {
+  '/v1/interpret/conversations': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    /** List Projects */
-    get: operations['list_projects_v1_projects_get']
+    /** List Conversations */
+    get: operations['list_conversations_v1_interpret_conversations_get']
     put?: never
-    /** Create A Project */
-    post: operations['create_a_project_v1_projects_post']
+    /** Start A Conversation */
+    post: operations['start_a_conversation_v1_interpret_conversations_post']
     delete?: never
     options?: never
     head?: never
     patch?: never
     trace?: never
   }
-  '/v1/projects/{project_id}': {
+  '/v1/interpret/conversations/{conversation_id}/turns': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    /** Get A Project */
-    get: operations['get_a_project_v1_projects__project_id__get']
+    get?: never
     put?: never
-    post?: never
-    /** Delete A Project */
-    delete: operations['delete_a_project_v1_projects__project_id__delete']
+    /** Take A Turn */
+    post: operations['take_a_turn_v1_interpret_conversations__conversation_id__turns_post']
+    delete?: never
     options?: never
     head?: never
-    /** Patch A Project */
-    patch: operations['patch_a_project_v1_projects__project_id__patch']
+    patch?: never
+    trace?: never
+  }
+  '/v1/interpret/conversations/{conversation_id}/end': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** End A Conversation */
+    post: operations['end_a_conversation_v1_interpret_conversations__conversation_id__end_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
   '/v1/api-tokens': {
@@ -1191,9 +1206,7 @@ export interface components {
       | 'billing.subscription_resume'
       | 'billing.plan_switch'
       | 'billing.email_update'
-      | 'project.create'
-      | 'project.update'
-      | 'project.delete'
+      | 'interpret.conversation_start'
     /** AuditLogOut */
     AuditLogOut: {
       /** Id */
@@ -1253,6 +1266,15 @@ export interface components {
        * Format: password
        */
       client_secret?: string | null
+    }
+    /** Body_take_a_turn_v1_interpret_conversations__conversation_id__turns_post */
+    Body_take_a_turn_v1_interpret_conversations__conversation_id__turns_post: {
+      speaker: components['schemas']['Speaker']
+      /**
+       * Audio
+       * @description 16 kHz, 16-bit mono WAV
+       */
+      audio: string
     }
     /** ChangePasswordIn */
     ChangePasswordIn: {
@@ -1318,6 +1340,36 @@ export interface components {
     ContactMessageOut: {
       /** Message */
       message: string
+    }
+    /** ConversationIn */
+    ConversationIn: {
+      /** @default da */
+      staff_language?: components['schemas']['Language']
+      citizen_language: components['schemas']['Language']
+    }
+    /** ConversationOut */
+    ConversationOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Updated At */
+      updated_at: string | null
+      /** Id */
+      id: number
+      /** Organization Id */
+      organization_id: number
+      /** User Id */
+      user_id: number | null
+      staff_language: components['schemas']['Language']
+      citizen_language: components['schemas']['Language']
+      /** Turn Count */
+      turn_count: number
+      /** Audio Ms */
+      audio_ms: number
+      /** Ended At */
+      ended_at: string | null
     }
     /** CustomerPortalOut */
     CustomerPortalOut: {
@@ -1416,6 +1468,11 @@ export interface components {
       /** Role Ids */
       role_ids: number[]
     }
+    /**
+     * Language
+     * @enum {string}
+     */
+    Language: 'da' | 'en' | 'ar' | 'uk'
     /**
      * Locale
      * @enum {string}
@@ -1572,6 +1629,17 @@ export interface components {
       /** Total */
       total: number
     }
+    /** PaginatedResponse[ConversationOut] */
+    PaginatedResponse_ConversationOut_: {
+      /** Items */
+      items: components['schemas']['ConversationOut'][]
+      /** Page Number */
+      page_number: number
+      /** Page Size */
+      page_size: number
+      /** Total */
+      total: number
+    }
     /** PaginatedResponse[NotificationOut] */
     PaginatedResponse_NotificationOut_: {
       /** Items */
@@ -1587,17 +1655,6 @@ export interface components {
     PaginatedResponse_PermissionOut_: {
       /** Items */
       items: components['schemas']['PermissionOut'][]
-      /** Page Number */
-      page_number: number
-      /** Page Size */
-      page_size: number
-      /** Total */
-      total: number
-    }
-    /** PaginatedResponse[ProjectOut] */
-    PaginatedResponse_ProjectOut_: {
-      /** Items */
-      items: components['schemas']['ProjectOut'][]
       /** Page Number */
       page_number: number
       /** Page Size */
@@ -1704,38 +1761,6 @@ export interface components {
       /** Value */
       value: number | null
     }
-    /** ProjectIn */
-    ProjectIn: {
-      /** Name */
-      name: string
-      /** Description */
-      description?: string | null
-    }
-    /** ProjectOut */
-    ProjectOut: {
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string
-      /** Updated At */
-      updated_at: string | null
-      /** Name */
-      name: string
-      /** Description */
-      description: string | null
-      /** Id */
-      id: number
-      /** Organization Id */
-      organization_id: number
-    }
-    /** ProjectPatch */
-    ProjectPatch: {
-      /** Name */
-      name?: string | null
-      /** Description */
-      description?: string | null
-    }
     /** RegisterIn */
     RegisterIn: {
       /**
@@ -1809,6 +1834,11 @@ export interface components {
       /** Setup Token */
       setup_token: string
     }
+    /**
+     * Speaker
+     * @enum {string}
+     */
+    Speaker: 'staff' | 'citizen'
     /** StartTrialIn */
     StartTrialIn: {
       /** Plan Price Id */
@@ -1896,6 +1926,23 @@ export interface components {
     TransferOwnershipIn: {
       /** User Id */
       user_id: number
+    }
+    /**
+     * TurnOut
+     * @description One translated turn. Returned once and never stored.
+     */
+    TurnOut: {
+      speaker: components['schemas']['Speaker']
+      source_language: components['schemas']['Language']
+      target_language: components['schemas']['Language']
+      /** Transcript */
+      transcript: string
+      /** Translation */
+      translation: string
+      /** Audio Base64 */
+      audio_base64: string | null
+      /** Audio Mime Type */
+      audio_mime_type: string
     }
     /** UnreadCountOut */
     UnreadCountOut: {
@@ -3213,7 +3260,7 @@ export interface operations {
       }
     }
   }
-  list_projects_v1_projects_get: {
+  list_conversations_v1_interpret_conversations_get: {
     parameters: {
       query?: {
         page_size?: number
@@ -3224,8 +3271,6 @@ export interface operations {
          *     Use a leading `-` before a field name to indicate descending sort order.
          */
         sort?: string
-        /** @description Search term. Case-insensitive match across searchable fields. */
-        q?: string | null
       }
       header?: never
       path?: never
@@ -3239,7 +3284,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PaginatedResponse_ProjectOut_']
+          'application/json': components['schemas']['PaginatedResponse_ConversationOut_']
         }
       }
       /** @description Bad Request */
@@ -3271,7 +3316,7 @@ export interface operations {
       }
     }
   }
-  create_a_project_v1_projects_post: {
+  start_a_conversation_v1_interpret_conversations_post: {
     parameters: {
       query?: never
       header?: never
@@ -3280,7 +3325,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ProjectIn']
+        'application/json': components['schemas']['ConversationIn']
       }
     }
     responses: {
@@ -3290,7 +3335,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectOut']
+          'application/json': components['schemas']['ConversationOut']
         }
       }
       /** @description Bad Request */
@@ -3313,114 +3358,18 @@ export interface operations {
       }
     }
   }
-  get_a_project_v1_projects__project_id__get: {
+  take_a_turn_v1_interpret_conversations__conversation_id__turns_post: {
     parameters: {
       query?: never
       header?: never
       path: {
-        project_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ProjectOut']
-        }
-      }
-      /** @description Bad Request */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Not Found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ValidationErrorResponse']
-        }
-      }
-    }
-  }
-  delete_a_project_v1_projects__project_id__delete: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        project_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Bad Request */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Not Found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ValidationErrorResponse']
-        }
-      }
-    }
-  }
-  patch_a_project_v1_projects__project_id__patch: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        project_id: number
+        conversation_id: number
       }
       cookie?: never
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ProjectPatch']
+        'multipart/form-data': components['schemas']['Body_take_a_turn_v1_interpret_conversations__conversation_id__turns_post']
       }
     }
     responses: {
@@ -3430,7 +3379,47 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectOut']
+          'application/json': components['schemas']['TurnOut']
+        }
+      }
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ValidationErrorResponse']
+        }
+      }
+    }
+  }
+  end_a_conversation_v1_interpret_conversations__conversation_id__end_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        conversation_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConversationOut']
         }
       }
       /** @description Bad Request */
@@ -5439,11 +5428,14 @@ export const auditActionValues: ReadonlyArray<
   'billing.subscription_resume',
   'billing.plan_switch',
   'billing.email_update',
-  'project.create',
-  'project.update',
-  'project.delete',
+  'interpret.conversation_start',
 ]
+export const languageValues: ReadonlyArray<
+  FlattenedDeepRequired<components>['schemas']['Language']
+> = ['da', 'en', 'ar', 'uk']
 export const localeValues: ReadonlyArray<FlattenedDeepRequired<components>['schemas']['Locale']> = [
   'da',
   'en',
 ]
+export const speakerValues: ReadonlyArray<FlattenedDeepRequired<components>['schemas']['Speaker']> =
+  ['staff', 'citizen']

@@ -135,7 +135,7 @@ def test_retrieve_a_user(admin_authenticated: TestClient) -> None:
     )
 
     permissions = rs["roles"][0]["permissions"]
-    assert len(permissions) == 8
+    assert len(permissions) == 5
 
     permission_names = {p["name"] for p in permissions}
     assert permission_names == {
@@ -143,10 +143,7 @@ def test_retrieve_a_user(admin_authenticated: TestClient) -> None:
         "read:role",
         "read:permission",
         "manage:api_token",
-        "read:project",
-        "create:project",
-        "update:project",
-        "delete:project",
+        "use:interpret",
     }
 
     for p in permissions:

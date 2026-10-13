@@ -1352,13 +1352,13 @@
         }
       }
     },
-    "/v1/projects": {
+    "/v1/interpret/conversations": {
       "get": {
         "tags": [
-          "Projects"
+          "Interpret"
         ],
-        "summary": "List Projects",
-        "operationId": "list_projects_v1_projects_get",
+        "summary": "List Conversations",
+        "operationId": "list_conversations_v1_interpret_conversations_get",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1399,24 +1399,6 @@
               "title": "Sort"
             },
             "description": "Comma-separated list of fields to sort by.\n\nUse a leading `-` before a field name to indicate descending sort order."
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Search term. Case-insensitive match across searchable fields.",
-              "title": "Q"
-            },
-            "description": "Search term. Case-insensitive match across searchable fields."
           }
         ],
         "responses": {
@@ -1425,7 +1407,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedResponse_ProjectOut_"
+                  "$ref": "#/components/schemas/PaginatedResponse_ConversationOut_"
                 }
               }
             }
@@ -1464,10 +1446,10 @@
       },
       "post": {
         "tags": [
-          "Projects"
+          "Interpret"
         ],
-        "summary": "Create A Project",
-        "operationId": "create_a_project_v1_projects_post",
+        "summary": "Start A Conversation",
+        "operationId": "start_a_conversation_v1_interpret_conversations_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1478,7 +1460,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectIn"
+                "$ref": "#/components/schemas/ConversationIn"
               }
             }
           }
@@ -1489,7 +1471,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProjectOut"
+                  "$ref": "#/components/schemas/ConversationOut"
                 }
               }
             }
@@ -1517,13 +1499,13 @@
         }
       }
     },
-    "/v1/projects/{project_id}": {
-      "get": {
+    "/v1/interpret/conversations/{conversation_id}/turns": {
+      "post": {
         "tags": [
-          "Projects"
+          "Interpret"
         ],
-        "summary": "Get A Project",
-        "operationId": "get_a_project_v1_projects__project_id__get",
+        "summary": "Take A Turn",
+        "operationId": "take_a_turn_v1_interpret_conversations__conversation_id__turns_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1531,86 +1513,21 @@
         ],
         "parameters": [
           {
-            "name": "project_id",
+            "name": "conversation_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
-              "title": "Project Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationErrorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Projects"
-        ],
-        "summary": "Patch A Project",
-        "operationId": "patch_a_project_v1_projects__project_id__patch",
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "project_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "title": "Project Id"
+              "title": "Conversation Id"
             }
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectPatch"
+                "$ref": "#/components/schemas/Body_take_a_turn_v1_interpret_conversations__conversation_id__turns_post"
               }
             }
           }
@@ -1621,7 +1538,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProjectOut"
+                  "$ref": "#/components/schemas/TurnOut"
                 }
               }
             }
@@ -1647,13 +1564,15 @@
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/v1/interpret/conversations/{conversation_id}/end": {
+      "post": {
         "tags": [
-          "Projects"
+          "Interpret"
         ],
-        "summary": "Delete A Project",
-        "operationId": "delete_a_project_v1_projects__project_id__delete",
+        "summary": "End A Conversation",
+        "operationId": "end_a_conversation_v1_interpret_conversations__conversation_id__end_post",
         "security": [
           {
             "OAuth2PasswordBearer": []
@@ -1661,18 +1580,25 @@
         ],
         "parameters": [
           {
-            "name": "project_id",
+            "name": "conversation_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
-              "title": "Project Id"
+              "title": "Conversation Id"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationOut"
+                }
+              }
+            }
           },
           "422": {
             "description": "Validation Error",
@@ -1686,16 +1612,6 @@
           },
           "400": {
             "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4716,9 +4632,7 @@
           "billing.subscription_resume",
           "billing.plan_switch",
           "billing.email_update",
-          "project.create",
-          "project.update",
-          "project.delete"
+          "interpret.conversation_start"
         ],
         "title": "AuditAction"
       },
@@ -4911,6 +4825,25 @@
           "password"
         ],
         "title": "Body_get_access_token_v1_auth_token_post"
+      },
+      "Body_take_a_turn_v1_interpret_conversations__conversation_id__turns_post": {
+        "properties": {
+          "speaker": {
+            "$ref": "#/components/schemas/Speaker"
+          },
+          "audio": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Audio",
+            "description": "16 kHz, 16-bit mono WAV"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speaker",
+          "audio"
+        ],
+        "title": "Body_take_a_turn_v1_interpret_conversations__conversation_id__turns_post"
       },
       "ChangePasswordIn": {
         "properties": {
@@ -5108,6 +5041,102 @@
           "message"
         ],
         "title": "ContactMessageOut"
+      },
+      "ConversationIn": {
+        "properties": {
+          "staff_language": {
+            "$ref": "#/components/schemas/Language",
+            "default": "da"
+          },
+          "citizen_language": {
+            "$ref": "#/components/schemas/Language"
+          }
+        },
+        "type": "object",
+        "required": [
+          "citizen_language"
+        ],
+        "title": "ConversationIn"
+      },
+      "ConversationOut": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "organization_id": {
+            "type": "integer",
+            "title": "Organization Id"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          },
+          "staff_language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "citizen_language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "turn_count": {
+            "type": "integer",
+            "title": "Turn Count"
+          },
+          "audio_ms": {
+            "type": "integer",
+            "title": "Audio Ms"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created_at",
+          "updated_at",
+          "id",
+          "organization_id",
+          "user_id",
+          "staff_language",
+          "citizen_language",
+          "turn_count",
+          "audio_ms",
+          "ended_at"
+        ],
+        "title": "ConversationOut"
       },
       "CustomerPortalOut": {
         "properties": {
@@ -5351,6 +5380,16 @@
           "role_ids"
         ],
         "title": "InviteUserIn"
+      },
+      "Language": {
+        "type": "string",
+        "enum": [
+          "da",
+          "en",
+          "ar",
+          "uk"
+        ],
+        "title": "Language"
       },
       "Locale": {
         "type": "string",
@@ -5752,6 +5791,37 @@
         ],
         "title": "PaginatedResponse[AuditLogOut]"
       },
+      "PaginatedResponse_ConversationOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ConversationOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "page_number": {
+            "type": "integer",
+            "title": "Page Number"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "page_number",
+          "page_size",
+          "total"
+        ],
+        "title": "PaginatedResponse[ConversationOut]"
+      },
       "PaginatedResponse_NotificationOut_": {
         "properties": {
           "items": {
@@ -5813,37 +5883,6 @@
           "total"
         ],
         "title": "PaginatedResponse[PermissionOut]"
-      },
-      "PaginatedResponse_ProjectOut_": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/ProjectOut"
-            },
-            "type": "array",
-            "title": "Items"
-          },
-          "page_number": {
-            "type": "integer",
-            "title": "Page Number"
-          },
-          "page_size": {
-            "type": "integer",
-            "title": "Page Size"
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total"
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "page_number",
-          "page_size",
-          "total"
-        ],
-        "title": "PaginatedResponse[ProjectOut]"
       },
       "PaginatedResponse_RoleOut_": {
         "properties": {
@@ -6112,118 +6151,6 @@
         ],
         "title": "PlanSettingOut"
       },
-      "ProjectIn": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 255,
-            "minLength": 1,
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "title": "ProjectIn"
-      },
-      "ProjectOut": {
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          },
-          "updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Updated At"
-          },
-          "name": {
-            "type": "string",
-            "maxLength": 255,
-            "minLength": 1,
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "organization_id": {
-            "type": "integer",
-            "title": "Organization Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "created_at",
-          "updated_at",
-          "name",
-          "description",
-          "id",
-          "organization_id"
-        ],
-        "title": "ProjectOut"
-      },
-      "ProjectPatch": {
-        "properties": {
-          "name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 255,
-                "minLength": 1
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "title": "ProjectPatch"
-      },
       "RegisterIn": {
         "properties": {
           "email": {
@@ -6424,6 +6351,14 @@
           "setup_token"
         ],
         "title": "SetupTokenOut"
+      },
+      "Speaker": {
+        "type": "string",
+        "enum": [
+          "staff",
+          "citizen"
+        ],
+        "title": "Speaker"
       },
       "StartTrialIn": {
         "properties": {
@@ -6675,6 +6610,54 @@
           "user_id"
         ],
         "title": "TransferOwnershipIn"
+      },
+      "TurnOut": {
+        "properties": {
+          "speaker": {
+            "$ref": "#/components/schemas/Speaker"
+          },
+          "source_language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "target_language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "transcript": {
+            "type": "string",
+            "title": "Transcript"
+          },
+          "translation": {
+            "type": "string",
+            "title": "Translation"
+          },
+          "audio_base64": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Base64"
+          },
+          "audio_mime_type": {
+            "type": "string",
+            "title": "Audio Mime Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speaker",
+          "source_language",
+          "target_language",
+          "transcript",
+          "translation",
+          "audio_base64",
+          "audio_mime_type"
+        ],
+        "title": "TurnOut",
+        "description": "One translated turn. Returned once and never stored."
       },
       "UnreadCountOut": {
         "properties": {

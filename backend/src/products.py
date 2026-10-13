@@ -10,10 +10,10 @@ product packages too; see `docs/adding-a-domain-module.md`.)
 """
 
 from src.billing.module import BILLING
-from src.example.product import EXAMPLE
 from src.foundation.core.module import Module
+from src.interpret.product import INTERPRET
 from src.marketing.module import MARKETING
 
-PRODUCTS: list[Module] = [EXAMPLE]
+PRODUCTS: list[Module] = [INTERPRET]
 
 MODULES: list[Module] = [BILLING, MARKETING, *PRODUCTS]

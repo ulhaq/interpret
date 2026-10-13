@@ -1,0 +1,4 @@
+# Recordings are people's voices: keep them out of git.
+out/
+samples/*
+!samples/.gitkeep
